@@ -4,6 +4,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
+import android.support.v4.app.DialogFragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
@@ -26,6 +27,7 @@ FlashDataBase db=new FlashDataBase(this);
 ListView listView;
 ArrayList<ModelForListing> items;
 CustomAdapter adapter;
+    FragmentManager fm = getSupportFragmentManager();
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -83,10 +85,25 @@ CustomAdapter adapter;
     }
 
     public void messageFromFragment(String message){
-        db.addNewTable(message);
-        items.add(new ModelForListing(message,FALSE));
-        adapter.notifyDataSetChanged();
-      }}
+       try{
+           db.addNewTable(message);
+            items.add(new ModelForListing(message,FALSE));
+            adapter.notifyDataSetChanged();}
+       catch(Exception e){
+            this.showDialogs(R.string.databaseError);
+        }
+      }
+
+
+
+    private  void showDialogs(int string){
+        DialogFragment newFragment = ErrorFrag.newInstance(
+                string);
+        newFragment.show(fm, "dialog");
+
+    }
+
+}
 
 
 

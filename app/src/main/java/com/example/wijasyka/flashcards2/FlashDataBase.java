@@ -73,15 +73,12 @@ public final class FlashDataBase extends SQLiteOpenHelper {
         }
         public void addNewTable(String nameTable){
             SQLiteDatabase db=getWritableDatabase();
-            try{db.execSQL("CREATE TABLE " + nameTable + " ("
+            db.execSQL("CREATE TABLE " + nameTable + " ("
                     + COL_1 + " INTEGER PRIMARY KEY AUTOINCREMENT,"
                     + COL_2 + " TEXT,"
                     + COL_3 + " TEXT"
                     + ");");
         }
-        catch(SQLException e){
-            Log.e(TAG,e.getMessage());
-    }}
         public void deleteTable(String tableName){
             SQLiteDatabase db=getWritableDatabase();
             db.execSQL("DROP TABLE IF EXISTS " + tableName);

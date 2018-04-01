@@ -6,7 +6,8 @@
     <string name="title_activity_pairs_list">PairsList</string>
     <string name="e_hint">foregin word</string>
     <string name="p_hint">national word</string>
-
+    <string name="alert_dialog_ok">ok</string>
+    <string name="databaseError">zla nazwa!!!!</string>
     <!-- TODO: Remove or change this placeholder text -->
     <string name="hello_blank_fragment">Hello blank fragment</string>
 </resources>
