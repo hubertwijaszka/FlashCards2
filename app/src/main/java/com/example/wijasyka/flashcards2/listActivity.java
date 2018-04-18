@@ -1,21 +1,37 @@
 package com.example.wijasyka.flashcards2;
 
+import android.Manifest;
+import android.content.ContentValues;
+import android.content.pm.PackageManager;
+import android.database.sqlite.SQLiteOpenHelper;
 import android.content.Context;
 import android.content.Intent;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
+import android.graphics.Path;
+import android.os.Environment;
+import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.DialogFragment;
 import android.support.v4.app.FragmentManager;
+import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.Menu;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.ListAdapter;
 import android.widget.ListView;
+import android.widget.TextView;
 import android.widget.Toast;
+
+import java.io.BufferedReader;
 import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileReader;
+import java.io.IOException;
+import java.io.InputStreamReader;
 import java.lang.reflect.Array;
 import java.util.ArrayList;
 import java.util.List;
@@ -75,6 +91,45 @@ CustomAdapter adapter;
             items.remove(o);
         }
         adapter.notifyDataSetChanged();
+    }
+    public void onClickAddFromFile(View view){
+
+        SQLiteDatabase db = this.db.getWritableDatabase();
+        db.beginTransaction();
+        try {
+            ///////////////////////////////////read storage permission
+            if (ContextCompat.checkSelfPermission(this,
+                    Manifest.permission.READ_EXTERNAL_STORAGE)
+                    != PackageManager.PERMISSION_GRANTED) {
+                if (ActivityCompat.shouldShowRequestPermissionRationale(this,
+                        Manifest.permission.READ_EXTERNAL_STORAGE)) {
+                } else {
+                    ActivityCompat.requestPermissions(this,
+                            new String[]{Manifest.permission.READ_EXTERNAL_STORAGE},
+                            1);
+                }
+            }
+            /////////////////////////////////////////////////////////////////////
+            File sdcard = Environment.getExternalStorageDirectory();
+            File file = new File(sdcard,"nowy.txt");
+            BufferedReader buffer = new BufferedReader(new FileReader(file));
+            String line = "";
+            while ((line = buffer.readLine()) != null) {
+                String[] colums = line.split(",");
+                if (colums.length != 2) {
+                    Log.d("CSVParser", "Skipping Bad CSV Row");
+                    continue;
+            }
+                String[] str = line.split(",", 2);
+                String nationalWord = str[1].toString();
+                String foreginWord = str[0].toString();
+                this.db.addWord(foreginWord,nationalWord,"costam2");
+            }
+        } catch (IOException e) {
+            this.showDialogs(R.string.databaseError);
+        }
+        db.setTransactionSuccessful();
+        db.endTransaction();
     }
 
         @Override

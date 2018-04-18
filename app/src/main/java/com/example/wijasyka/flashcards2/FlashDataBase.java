@@ -50,7 +50,14 @@ public final class FlashDataBase extends SQLiteOpenHelper {
             ContentValues pair=new ContentValues();
             pair.put(COL_2,pWord);
             pair.put(COL_3,eWord);
-            db.insertOrThrow(tableName, null, pair);
+            try{
+                db.insertOrThrow(tableName, null, pair);
+            }
+            catch(Exception e){
+                addNewTable(tableName);
+                db.insertOrThrow(tableName, null, pair);
+            }
+
         }
         public Cursor readDate(String name){
             String[] column={COL_1,COL_2,COL_3};
